@@ -10,13 +10,13 @@ import (
 func FetchData(moviebuffURL string) ([]byte, error) {
 	res, err := http.Get(fmt.Sprintf("%s/%s", baseURL, moviebuffURL))
 	if err != nil {
-		log.Println("Error fetching data: ", err)
+		log.Println("Error fetching data.", "URL", moviebuffURL, "Error", err)
 		return nil, err
 	}
 
 	data, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Println("Error reading data: ", err)
+		log.Println("Error reading data.", "URL", moviebuffURL, "Error", err)
 		return nil, err
 	}
 
@@ -25,7 +25,7 @@ func FetchData(moviebuffURL string) ([]byte, error) {
 		return data, nil
 
 	default:
-		log.Println("Invalid status code: ", res.StatusCode)
-		return nil, fmt.Errorf("movie not found")
+		log.Println("Invalid response.", "URL", moviebuffURL, "Status code", res.StatusCode, "Data", string(data))
+		return nil, fmt.Errorf("invalid response. Status code: %d. Data: %s", res.StatusCode, string(data))
 	}
 }

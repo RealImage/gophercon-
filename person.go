@@ -21,7 +21,6 @@ type Person struct {
 func FetchPersonDetails(personURL string) (Person, error) {
 	data, err := FetchData(personURL)
 	if err != nil {
-		log.Println("Error fetching person data: ", err)
 		return Person{}, err
 	}
 
@@ -33,4 +32,29 @@ func FetchPersonDetails(personURL string) (Person, error) {
 	}
 
 	return person, nil
+}
+
+func ToMovieRoleSet(movieRoles []MovieRole) map[string]MovieRole {
+	movieRoleSet := make(map[string]MovieRole)
+	for _, movieRole := range movieRoles {
+		movieRoleSet[movieRole.URL] = movieRole
+	}
+
+	return movieRoleSet
+}
+
+func HasSameMovie(movieRoleSet1 map[string]MovieRole, movieRoleSet2 map[string]MovieRole) bool {
+	for movieURL := range movieRoleSet1 {
+		if _, ok := movieRoleSet2[movieURL]; ok {
+			return true
+		}
+	}
+
+	for movieURL := range movieRoleSet2 {
+		if _, ok := movieRoleSet1[movieURL]; ok {
+			return true
+		}
+	}
+
+	return false
 }
