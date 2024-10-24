@@ -10,8 +10,8 @@ type VisitedSources struct {
 }
 
 // NewVisitedSources creates a new VisitedSources.
-func NewVisitedSources() VisitedSources {
-	return VisitedSources{
+func NewVisitedSources() *VisitedSources {
+	return &VisitedSources{
 		URLs:  make(map[string]struct{}),
 		mutex: &sync.RWMutex{},
 	}

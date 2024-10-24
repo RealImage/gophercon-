@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 )
 
@@ -42,17 +41,13 @@ const baseURL = "https://data.moviebuff.com"
 
 // FetchData is a helper function that fetches data from any Moviebuff URL.
 func FetchData(moviebuffURL string) ([]byte, error) {
-	logger := slog.With("URL", moviebuffURL)
-
 	res, err := http.Get(fmt.Sprintf("%s/%s", baseURL, moviebuffURL))
 	if err != nil {
-		logger.Error("Error fetching data.", "Error", err)
 		return nil, err
 	}
 
 	data, err := io.ReadAll(res.Body)
 	if err != nil {
-		logger.Error("Error reading data.", "Error", err)
 		return nil, err
 	}
 
@@ -61,7 +56,6 @@ func FetchData(moviebuffURL string) ([]byte, error) {
 		return data, nil
 
 	default:
-		logger.Error("Invalid response.", "Status code", res.StatusCode, "Data", string(data))
 		return nil, fmt.Errorf("invalid response. Status code: %d. Data: %s", res.StatusCode, string(data))
 	}
 }
@@ -76,7 +70,6 @@ func FetchMovie(movieURL string) (Movie, error) {
 	var movie Movie
 	err = json.Unmarshal(data, &movie)
 	if err != nil {
-		slog.Error("Error unmarshalling movie data.", "Error", err)
 		return Movie{}, err
 	}
 
@@ -93,7 +86,6 @@ func FetchPerson(personURL string) (Person, error) {
 	var person Person
 	err = json.Unmarshal(data, &person)
 	if err != nil {
-		slog.Error("Error unmarshalling person data.", "Error", err)
 		return Person{}, err
 	}
 
