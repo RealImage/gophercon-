@@ -13,13 +13,13 @@ func Worker(wg *sync.WaitGroup, person2 string, jobs <-chan Job, results chan<- 
 	defer wg.Done()
 
 	for j := range jobs {
-		personData, err := FetchPersonDetails(j.person)
+		personData, err := FetchPerson(j.person)
 		if err != nil {
 			return
 		}
 
 		for _, movieRole := range personData.Movies {
-			movieData, err := FetchMovieDetails(movieRole.URL)
+			movieData, err := FetchMovie(movieRole.URL)
 			if err != nil {
 				continue
 			}
