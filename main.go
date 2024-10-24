@@ -4,12 +4,14 @@ import (
 	"sync"
 )
 
+var visitedSources = NewVisitedSources()
+
 func Degrees(person1 string, person2 string) {
 	jobQu := []Job{
 		{
 			person:      person1,
 			degree:      0,
-			connections: []Connection{},
+			connections: []Collaboration{},
 		},
 	}
 	visitedSources.Add(person1)
@@ -50,7 +52,7 @@ func Degrees(person1 string, person2 string) {
 			newJobQ := []Job{}
 			for result := range results {
 				if result.done {
-					PrintResult(result.connections, result.degree)
+					PrintCollaborations(result.connections, result.degree)
 					poolResult <- struct {
 						jobQu []Job
 						done  bool

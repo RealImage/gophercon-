@@ -5,7 +5,7 @@ import "sync"
 type Job struct {
 	person      string
 	degree      int64
-	connections []Connection
+	connections []Collaboration
 	done        bool
 }
 
@@ -31,7 +31,7 @@ func Worker(wg *sync.WaitGroup, person2 string, jobs <-chan Job, results chan<- 
 					continue
 				}
 
-				connections := append(j.connections, Connection{
+				connections := append(j.connections, Collaboration{
 					Movie:       movieData.Name,
 					Person1:     personData.Name,
 					Person1Role: movieRole.Role,
