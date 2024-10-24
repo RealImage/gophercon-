@@ -13,10 +13,22 @@ type GraphSource struct {
 	Degree int64
 	// Connections are the details of the connections between the source person and current person.
 	Connections []Collaboration
+	// IsDest indicates if the current person is the destination person.
+	IsDest bool
+}
+
+// Reader represents the data that is read by the reader goroutine.
+type Reader struct {
+	// Queue is the next level of people to be explored.
+	Queue []GraphSource
+	// FoundDest is true if the destination is found.
+	FoundDest bool
+	// DestSource is the details of the destination, it is only set if the "FoundDest" is true.
+	DestSource GraphSource
 }
 
 // GraphTraversalWorker traverses the nodes of the level provided in the "jobs" channel and writes the nodes of the next level to the "results" channel.
-func GraphTraversalWorker(ctx context.Context, ctxCancel context.CancelFunc, destPerson string, vs *VisitedSources, jobs <-chan GraphSource, results chan<- GraphSource) {
+func GraphTraversalWorker(ctx context.Context, destPerson string, vs *VisitedSources, jobs <-chan GraphSource, results chan<- GraphSource) {
 	for job := range jobs {
 		// Fetch the person data.
 		personData, err := FetchPerson(job.PersonURL)
@@ -63,11 +75,8 @@ func GraphTraversalWorker(ctx context.Context, ctxCancel context.CancelFunc, des
 				}
 
 				// Check if the destination person has been found.
-				// If so, print the connections, cancel the context to stop the workers, and return.
 				if member.URL == destPerson {
-					PrintCollaborations(gs.Connections, gs.Degree)
-					ctxCancel()
-					return
+					gs.IsDest = true
 				}
 
 				// Add the member to the visited list and write the node to the results channel.
@@ -75,6 +84,10 @@ func GraphTraversalWorker(ctx context.Context, ctxCancel context.CancelFunc, des
 				select {
 				case results <- gs:
 				case <-ctx.Done():
+					return
+				}
+
+				if gs.IsDest {
 					return
 				}
 			}
@@ -115,8 +128,7 @@ func SeperationDegrees(srcPerson string, destPerson string) {
 
 		// rwGroup is used to wait for the reader (reading from "results" channel) and writer (writing to "results" channel) to finish.
 		rwGroup := &sync.WaitGroup{}
-		// rwGroupChn is used to send the next level of people to be explored from the reader.
-		rwGroupChn := make(chan []GraphSource, 1)
+		rwGroupChn := make(chan Reader, 1)
 
 		// As the we don't know how many people are in the next level, the size of the
 		// "results" channel is set to 1. That means we need to haver reader always reading from the channel.
@@ -126,19 +138,17 @@ func SeperationDegrees(srcPerson string, destPerson string) {
 			defer rwGroup.Done()
 
 			newQueue := []GraphSource{}
-			for {
-				select {
-				case result, ok := <-results:
-					if !ok {
-						rwGroupChn <- newQueue
-						return
-					}
-					newQueue = append(newQueue, result)
-
-				case <-ctx.Done():
+			for result := range results {
+				if result.IsDest {
+					rwGroupChn <- Reader{FoundDest: true, DestSource: result}
+					ctxCancel()
 					return
 				}
+
+				newQueue = append(newQueue, result)
 			}
+
+			rwGroupChn <- Reader{Queue: newQueue}
 		}()
 
 		// Add a goroutine to process the people in the queue.
@@ -152,7 +162,7 @@ func SeperationDegrees(srcPerson string, destPerson string) {
 				wg.Add(1)
 				go func() {
 					defer wg.Done()
-					GraphTraversalWorker(ctx, ctxCancel, destPerson, vs, jobs, results)
+					GraphTraversalWorker(ctx, destPerson, vs, jobs, results)
 				}()
 			}
 
@@ -170,11 +180,12 @@ func SeperationDegrees(srcPerson string, destPerson string) {
 		rwGroup.Wait()
 		close(rwGroupChn)
 
-		select {
-		case <-ctx.Done():
+		res := <-rwGroupChn
+		if res.FoundDest {
+			PrintCollaborations(res.DestSource.Connections, res.DestSource.Degree)
 			return
-		case queue = <-rwGroupChn:
 		}
+		queue = res.Queue
 	}
 
 	PrintCollaborations(nil, 0)

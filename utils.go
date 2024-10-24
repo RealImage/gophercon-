@@ -16,11 +16,11 @@ type Collaboration struct {
 // PrintCollaborations prints a list of collaborations.
 func PrintCollaborations(collabs []Collaboration, degree int64) {
 	if len(collabs) == 0 {
-		fmt.Println("No collaborations found.")
+		fmt.Println("\nNo collaborations found.")
 		return
 	}
 
-	fmt.Println("Degree of Seperation: ", degree)
+	fmt.Println("\nDegree of Seperation: ", degree)
 	for i, connection := range collabs {
 		fmt.Printf("%d. Movie: %s\n", i+1, connection.Movie)
 		fmt.Printf("%s: %s\n", connection.Person1Role, connection.Person1)
