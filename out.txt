@@ -1,0 +1,8 @@
+2024/10/26 10:07:25 [amitabh-bachchan robert-de-niro]
+2024/10/26 10:07:25 degree: 1
+2024/10/26 10:07:55 degree: 2
+2024/10/26 10:15:04 error while fetching actor details
+2024/10/26 10:17:11 error while fetching actor details
+2024/10/26 10:24:11 error while fetching actor details
+2024/10/26 10:24:35 degree: 3
+signal: interrupt
