@@ -150,6 +150,7 @@ func printResult(sourceArtistURL string) {
 
 	parentPerson := parent[currentPerson]
 	for {
+		// A defer function call helps tracing the path in a reverse order.
 		defer func(parentPerson Path, currentPerson string, count int) {
 			// Fetch the names of parent, person and movie
 			parentName, personName, movieName := GetNames(parentPerson.ParentURL, currentPerson, parentPerson.Movie)

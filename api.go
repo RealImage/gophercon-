@@ -11,6 +11,7 @@ import (
 	"golang.org/x/time/rate"
 )
 
+// This should ideally be store as an environment variable
 const API_ENDPOINT = "http://data.moviebuff.com/"
 
 // NewClient with a ratelimiter
@@ -71,6 +72,7 @@ func FetchEntityDetails[T Entity](url string) (*T, error) {
 	return &entity, nil
 }
 
+// Fetches the names of the persons and movie
 func GetNames(parentURL string, personURL string, movieURL string) (string, string, string) {
 	parent, err := FetchEntityDetails[Person](parentURL)
 	if err != nil {
