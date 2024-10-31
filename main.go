@@ -1,20 +1,25 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"time"
 )
 
 func main() {
 
-	t := time.Now()
-	defer func() {
-		fmt.Println("Total Time taken: ", time.Since(t).Seconds())
-	}()
+	// Usage:
+	/*
+		Compile the program using "go build main.go -o main.exe"
+		Following is an example usage:
 
-	// Readin the Command Line Arguments
+		[For Windows]
+		./main.exe amitabh-bachchan robert-de-niro
+
+		[For Others]
+		Follow OS specific extensions in place of ".exe"
+	*/
+
+	// Command Line Arguments
 	artistA := os.Args[1]
 	artistB := os.Args[2]
 
@@ -22,8 +27,6 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-
-	// Search if related
 
 	Separation(*personA, artistB)
 }

@@ -13,7 +13,7 @@ import (
 
 const API_ENDPOINT = "http://data.moviebuff.com/"
 
-// NewClient return http client with a ratelimiter
+// NewClient with a ratelimiter
 func NewClient(rl *rate.Limiter) *HTTPClient {
 	c := &HTTPClient{
 		client:      http.DefaultClient,
@@ -22,21 +22,20 @@ func NewClient(rl *rate.Limiter) *HTTPClient {
 	return c
 }
 
-// This is a wrapper for the Client.Do() method which includes Rate limiting.
+// A wrapper over client.Do() method for Rate limiting.
 func (c *HTTPClient) Do(req *http.Request) (*http.Response, error) {
 	err := c.RateLimiter.Wait(req.Context())
 	if err != nil {
-		log.Println("error 0")
 		return nil, err
 	}
 	resp, err := c.client.Do(req)
 	if err != nil {
-		log.Println("error 1")
 		return nil, err
 	}
 	return resp, nil
 }
 
+// Generic Function to Fetch Person|Movie Details
 func FetchEntityDetails[T Entity](url string) (*T, error) {
 	req, err := http.NewRequest(http.MethodGet, API_ENDPOINT+url, nil)
 	if err != nil {
@@ -72,7 +71,7 @@ func FetchEntityDetails[T Entity](url string) (*T, error) {
 	return &entity, nil
 }
 
-func GetPathDetails(parentURL string, personURL string, movieURL string) (string, string, string) {
+func GetNames(parentURL string, personURL string, movieURL string) (string, string, string) {
 	parent, err := FetchEntityDetails[Person](parentURL)
 	if err != nil {
 		log.Println(err)

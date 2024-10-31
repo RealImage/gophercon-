@@ -73,7 +73,6 @@ func Separation(artistA Person, artistB string) {
 			// Iterate through the MovieList to find related Persons
 			for _, movie := range person.(Person).Movies {
 				sm.wg.Add(1)
-				// Function to handle the movie Data. i.e. find the linked artists and push them on the queue
 				go handleMovieData(movie, current, artistB)
 			}
 			sm.wg.Wait()
@@ -81,6 +80,7 @@ func Separation(artistA Person, artistB string) {
 	}
 }
 
+// Function to handle the movie Data. i.e. find the linked artists and push them on the queue
 func handleMovieData(m Details, current QueueData, artistB string) {
 	defer sm.wg.Done()
 
@@ -143,6 +143,7 @@ func handleMovieData(m Details, current QueueData, artistB string) {
 	}
 }
 
+// Function to Print the results in the specified Format
 func printResult(sourceArtistURL string) {
 	degrees := <-sm.dos
 	fmt.Println("Distance of Separation: ", degrees)
@@ -150,8 +151,8 @@ func printResult(sourceArtistURL string) {
 	parentPerson := parent[currentPerson]
 	for {
 		defer func(parentPerson Path, currentPerson string, count int) {
-			// Fetch the name of parent and person
-			parentName, personName, movieName := GetPathDetails(parentPerson.ParentURL, currentPerson, parentPerson.Movie)
+			// Fetch the names of parent, person and movie
+			parentName, personName, movieName := GetNames(parentPerson.ParentURL, currentPerson, parentPerson.Movie)
 			fmt.Printf("\n%d. Movie: %s", count, movieName)
 			fmt.Printf("\n%s: %s", parentPerson.ParentRole, parentName)
 			fmt.Printf("\n%s: %s\n", parentPerson.Role, personName)
