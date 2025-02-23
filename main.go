@@ -189,7 +189,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Degrees of Separation: %d\n\n", len(path.Depth))
+	fmt.Printf("\nDegrees of Separation: %d\n\n", len(path.Depth))
 	for i, step := range path.Depth {
 		fmt.Printf("%d. Movie: %s\n", i+1, step.Movie)
 		if i == 0 {
