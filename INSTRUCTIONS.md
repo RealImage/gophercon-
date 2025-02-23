@@ -10,7 +10,7 @@ This solution finds the shortest degree of connection between two actors based o
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/c-harish/toupdate.git
+    git clone https://github.com/c-harish/challenge2015.git
     cd challenge2015
     ```
 
