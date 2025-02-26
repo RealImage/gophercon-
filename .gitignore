@@ -1,0 +1,7 @@
+# Ignore binary files
+qubecli
+*.exe
+*.out
+*.o
+*.so
+*.a
