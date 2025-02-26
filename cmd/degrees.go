@@ -13,10 +13,17 @@ import (
 
 // degreesCmd represents the degrees command
 var degreesCmd = &cobra.Command{
-	Use:   "degrees",
+	Use:   "degrees <person1> <person2>",
 	Short: "Find the degrees of separation between two actors",
-	Long:  `Find the degrees of separation between two actors using a BFS algorithm.`,
-	Args:  cobra.ExactArgs(2), // Ensure exactly 2 arguments are provided
+	Long: `Find the degrees of separation between two actors using a BFS algorithm.
+
+Arguments:
+  <person1>   Name of the first actor
+  <person2>   Name of the second actor
+
+Example:
+  qubecli degrees amitabh-bachchan robert-de-niro`,
+	Args: cobra.ExactArgs(2), // Ensure exactly 2 arguments are provided
 	Run: func(cmd *cobra.Command, args []string) {
 		start := args[0]
 		target := args[1]
@@ -28,7 +35,7 @@ var degreesCmd = &cobra.Command{
 		}
 
 		// Print the result
-		fmt.Printf("Degrees of Separation: %v \n\n", len(ans.Nodes))
+		fmt.Printf("\nDegrees of Separation: %v \n\n", len(ans.Nodes))
 		for i, node := range ans.Nodes {
 			fmt.Printf("%v. Movie: %s\n", i+1, node.Movie)
 			fmt.Printf("%s: %s\n", node.Role1, node.Person1)
