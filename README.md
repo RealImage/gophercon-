@@ -11,7 +11,7 @@ It builds a **graph of connections** using movies, cast, and crew details and fi
 
 ## 📂 Project Structure  
 ```
-qube_assignment/
+challenge2015/
 │── main.go                   # Entry point (CLI)
 │── go.mod                    # Go module file
 │── go.sum                    # Dependencies
