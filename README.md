@@ -31,13 +31,13 @@ qube_assignment/
 
 ### 1️⃣ Clone the Repository  
 ```sh
-git clone https://github.com/viswamvs/qube_assignment.git
-cd qube_assignment
+git clone https://github.com/viswamvs/challenge2015.git
+cd challenge2015
 ```
 
 ### 2️⃣ Initialize Go Modules  
 ```sh
-go mod init qube_assignment
+go mod init challenge2015
 go mod tidy
 ```
 
